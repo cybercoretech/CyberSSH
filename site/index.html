@@ -7,7 +7,7 @@
   <meta name="description" content="CyberSSH is Cybercore's secure Android SSH console for deliberate remote operations.">
   <title>CyberSSH — Blacksite Console</title>
   <link rel="icon" type="image/svg+xml" href="assets/cyberssh-blacksite-console.svg">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=install-panel-3">
 </head>
 <body>
   <div class="scanline" aria-hidden="true"></div>
@@ -63,8 +63,9 @@
     <section class="install-section wrap" id="install">
       <div class="install-copy"><p class="eyebrow">ANDROID / SOURCE INSTALL</p><h2>Build it.<br><span>Put it in your hands.</span></h2><p>Run this on a Linux workstation with JDK 17+, Android SDK platform 36, and ADB. Connect one Android device, enable USB debugging, and authorize the computer.</p><a class="text-link" href="https://cybercoretech.github.io/fdroid/" target="_blank" rel="noreferrer">CYBERCORE F-DROID REPOSITORY ↗</a><p class="install-note">This command builds the pinned source locally and installs a debug-signed test build; it is not a public release APK. Use the Cybercore F-Droid page for repository access and app availability.</p></div>
       <div class="install-terminal" aria-label="CyberSSH source installation command">
-        <div class="install-terminal-head"><span><i></i><i></i><i></i> OPERATOR / LOCAL BUILD</span><span>LINUX · ADB</span></div>
-        <div class="install-command"><span class="prompt">$</span><code id="install-command">curl -fsSL https://raw.githubusercontent.com/cybercoretech/CyberSSH/main/scripts/install-android.sh | bash</code><button class="copy-command" type="button" aria-label="Copy install command" data-copy-target="install-command">COPY</button></div>
+        <div class="install-terminal-head"><span class="terminal-identity"><i></i><i></i><i></i> OPERATOR / LOCAL BUILD</span><span class="terminal-platform">LINUX <b>·</b> ADB</span></div>
+        <p class="command-caption">BUILD + INSTALL / PINNED SOURCE</p>
+        <div class="install-command"><span class="prompt" aria-hidden="true">$</span><code id="install-command">curl -fsSL https://raw.githubusercontent.com/cybercoretech/CyberSSH/main/scripts/install-android.sh | bash</code><button class="copy-command" type="button" aria-label="Copy install command" data-copy-target="install-command">COPY COMMAND</button></div>
         <p class="terminal-hint">Review the <a href="https://github.com/cybercoretech/CyberSSH/blob/main/scripts/install-android.sh" target="_blank" rel="noreferrer">installer source</a> before running. The script asks before it downloads, builds, or installs.</p>
       </div>
     </section>
