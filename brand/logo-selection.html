@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b10">
+  <title>CyberSSH // Identity Lab</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+    :root { color-scheme:dark; --bg:#080b10; --panel:#10151c; --line:#27313b; --text:#e8edf2; --mute:#84909b; --cyan:#23d9e8; --lime:#9aff6a; --pink:#ff3f9c; --amber:#ffbd56; }
+    * { box-sizing:border-box }
+    body { margin:0; min-height:100vh; color:var(--text); background:radial-gradient(ellipse at 52% -16%,#142430 0,transparent 50%),linear-gradient(180deg,#080b10,#07090e 70%); font-family:'IBM Plex Mono',monospace }
+    body:before { content:""; position:fixed; inset:0; pointer-events:none; opacity:.18; background:linear-gradient(90deg,transparent 49.94%,#1b3440 50%,transparent 50.06%),linear-gradient(0deg,transparent 49.94%,#1b3440 50%,transparent 50.06%); background-size:64px 64px; mask-image:linear-gradient(to bottom,black,transparent 75%) }
+    main { position:relative; width:min(1440px,100%); margin:auto; padding:42px clamp(18px,4vw,58px) 64px }
+    .top { display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--line); padding:0 0 17px; color:#9aa8b3; font-size:10px; letter-spacing:.16em; text-transform:uppercase }
+    .signal { color:var(--cyan) } .signal:before { content:'◆'; color:var(--lime); margin-right:10px }
+    h1 { margin:45px 0 8px; max-width:900px; font-family:'Barlow Condensed',sans-serif; font-weight:800; text-transform:uppercase; letter-spacing:-.025em; font-size:clamp(52px,8vw,100px); line-height:.86 }
+    h1 span { color:var(--cyan); text-shadow:0 0 28px #23d9e833 }
+    .intro { display:flex; justify-content:space-between; align-items:end; gap:24px; margin:19px 0 32px; color:#94a0aa; font-size:12px; line-height:1.7 }
+    .intro p { margin:0; max-width:680px } .counter { white-space:nowrap; color:var(--lime); font-size:10px; letter-spacing:.1em }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:15px }
+    article { --accent:var(--cyan); position:relative; min-height:208px; padding:18px 21px 16px; overflow:hidden; border:1px solid #27323c; background:linear-gradient(120deg,#111821e8,#0c1016f2 72%); clip-path:polygon(0 0,calc(100% - 15px) 0,100% 15px,100% 100%,15px 100%,0 calc(100% - 15px)); transition:border-color .22s,transform .22s,background .22s }
+    article:before { content:""; position:absolute; width:90px; height:1px; right:22px; top:0; background:var(--accent); box-shadow:0 0 15px var(--accent) }
+    article:after { content:""; position:absolute; width:120px; height:120px; right:-60px; bottom:-80px; border-radius:50%; background:var(--accent); filter:blur(65px); opacity:.11; pointer-events:none }
+    article:hover { transform:translateY(-2px); border-color:color-mix(in srgb,var(--accent) 52%,#27323c); background:linear-gradient(120deg,#151f28,#0c1016 72%) }
+    article.selected { border-color:#9aff6a99; box-shadow:inset 0 0 0 1px #9aff6a44,0 0 28px #9aff6a12; background:linear-gradient(120deg,#142019,#0c1016 72%) }
+    article.selected:before { width:150px; height:2px; box-shadow:0 0 18px #9aff6a }
+    .selected-tag { color:#080b10; background:#9aff6a; padding:4px 7px; margin-left:8px; font-weight:600; letter-spacing:.1em }
+    .lime { --accent:var(--lime) } .pink { --accent:var(--pink) } .amber { --accent:var(--amber) } .ice { --accent:#a9b8ff }
+    .meta { display:flex; justify-content:space-between; color:#75818c; font-size:9px; letter-spacing:.12em; text-transform:uppercase }
+    .num { color:var(--accent) }
+    .lockup { min-height:108px; display:flex; align-items:center; gap:20px; padding:8px 0 2px }
+    svg { flex:none; width:96px; height:96px; overflow:visible; filter:drop-shadow(0 0 8px color-mix(in srgb,var(--accent) 22%,transparent)) }
+    .mark { color:var(--accent) } .steel { color:#d9e2e8 } .dim { color:#52616d }
+    .word { min-width:0 } .word b { display:block; color:#edf2f6; font-family:'Barlow Condensed',sans-serif; font-size:clamp(26px,3.1vw,38px); line-height:1; font-weight:700; letter-spacing:.035em }
+    .word small { display:block; margin-top:7px; color:#82909b; font-size:9px; letter-spacing:.23em; text-transform:uppercase }
+    .concept { border-top:1px solid #242e37; padding-top:11px; display:flex; gap:10px; align-items:baseline; color:#909ca7; font-size:10px }
+    .concept strong { color:var(--accent); font-size:9px; letter-spacing:.13em; text-transform:uppercase; white-space:nowrap }
+    footer { display:flex; justify-content:space-between; border-top:1px solid var(--line); margin-top:28px; padding-top:13px; color:#65717c; font-size:9px; letter-spacing:.1em; text-transform:uppercase }
+    @media(max-width:740px) { main{padding-top:24px}.grid{grid-template-columns:1fr}.intro{align-items:start;flex-direction:column}article{min-height:190px}.lockup{min-height:96px}footer{gap:14px;flex-direction:column} }
+  </style>
+</head>
+<body>
+<main>
+  <div class="top"><span class="signal">Cybercore / Identity Lab</span><span>Private network tools · Mark study 01</span></div>
+  <h1>Cyber<span>SSH</span><br>Mark directions</h1>
+  <div class="intro"><p>Ten purpose-built identity routes for a secure remote console. Each mark is drawn as editable vector geometry for clean scaling from launcher icon to interface lockup. The set uses graphite titanium, electric cyan, and carefully rationed secondary signals.</p><div class="counter">SELECTED: 06&nbsp; / &nbsp;BLACKSITE CONSOLE</div></div>
+
+  <section class="grid" aria-label="Ten CyberSSH logo options">
+    <article>
+      <div class="meta"><span>01 / Shield protocol</span><span class="num">CS—01</span></div>
+      <div class="lockup"><svg viewBox="0 0 120 120" role="img" aria-label="Angular shield with secure command path"><path class="dim" d="M60 8 99 30v43L60 104 21 73V30z" fill="none" stroke="currentColor" stroke-width="2"/><path class="mark" d="M60 15 92 33v36L60 94 28 69V33z" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="bevel"/><path class="steel" d="m45 45 14 12-14 13" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="square" stroke-linejoin="bevel"/><path class="mark" d="M64 70h16" stroke="currentColor" stroke-width="5" stroke-linecap="square"/><circle cx="83" cy="39" r="3" class="mark" fill="currentColor"/></svg><div class="word"><b>CYBERSSH</b><small>Secure remote operations</small></div></div>
+      <div class="concept"><strong>Command / shield</strong><span>Terminal prompt protected inside a hardened network crest.</span></div>
+    </article>
+
+    <article class="lime">
+      <div class="meta"><span>02 / Cipher spine</span><span class="num">CS—02</span></div>
+      <div class="lockup"><svg viewBox="0 0 120 120" role="img" aria-label="Interlocked C and S cipher"><path class="dim" d="M25 25h70v70H25z" fill="none" stroke="currentColor" stroke-width="1.5"/><path class="mark" d="M72 29H49c-13 0-21 9-21 21v20c0 13 8 21 21 21h23M49 44h27M49 76h27" fill="none" stroke="currentColor" stroke-width="7" stroke-linecap="square"/><path class="steel" d="m58 47 13 13-13 13" fill="none" stroke="currentColor" stroke-width="4"/><path class="mark" d="M71 60h21" stroke="currentColor" stroke-width="4"/><path class="mark" d="M19 39h6M95 81h7" stroke="currentColor" stroke-width="3"/></svg><div class="word"><b>CYBERSSH</b><small>Secure remote operations</small></div></div>
+      <div class="concept"><strong>CS / cipher</strong><span>A custom monogram built from one continuous, interlocking route.</span></div>
+    </article>
+
+    <article class="pink">
+      <div class="meta"><span>03 / Tunnel gate</span><span class="num">CS—03</span></div>
+      <div class="lockup"><svg viewBox="0 0 120 120" role="img" aria-label="Layered SSH tunnel with data packet"><path class="dim" d="M18 22h84v76H18z" fill="none" stroke="currentColor" stroke-width="1.5"/><path class="dim" d="M30 32h60v56H30z" fill="none" stroke="currentColor" stroke-width="2"/><path class="mark" d="M43 41h35l12 19-12 19H43L31 60z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="bevel"/><path class="steel" d="M48 51 59 60 48 69" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="bevel"/><circle cx="72" cy="60" r="4" fill="currentColor" class="mark"/><path class="mark" d="M12 60h15m66 0h15" stroke="currentColor" stroke-width="2"/><path class="mark" d="m19 55-7 5 7 5m82-10 7 5-7 5" fill="none" stroke="currentColor" stroke-width="2"/></svg><div class="word"><b>CYBERSSH</b><small>Secure remote operations</small></div></div>
+      <div class="concept"><strong>Secure tunnel</strong><span>Layered transmission gates pull the signal toward a protected core.</span></div>
+    </article>
+
+    <article class="amber">
+      <div class="meta"><span>04 / Sentinel key</span><span class="num">CS—04</span></div>
+      <div class="lockup"><svg viewBox="0 0 120 120" role="img" aria-label="Mechanical SSH key with terminal teeth"><path class="mark" d="M45 25a25 25 0 1 0 20 40l8 8h12v12h12V73L78 54a25 25 0 0 0-33-29Z" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="bevel"/><circle cx="44" cy="45" r="8" fill="none" stroke="currentColor" stroke-width="3" class="steel"/><path class="steel" d="m50 53 15 15m7 5 10 10m3-10 10 10" stroke="currentColor" stroke-width="3"/><path class="mark" d="M39 42h10m-5-5v10" stroke="currentColor" stroke-width="2"/></svg><div class="word"><b>CYBERSSH</b><small>Secure remote operations</small></div></div>
+      <div class="concept"><strong>Access / hardware</strong><span>Machined access key with terminal-cut teeth and a signal core.</span></div>
+    </article>
+
+    <article class="ice">
+      <div class="meta"><span>05 / Deepwave link</span><span class="num">CS—05</span></div>
+      <div class="lockup"><svg viewBox="0 0 120 120" role="img" aria-label="Angular data wave around remote link"><path class="dim" d="M60 12 102 36v48l-42 24L18 84V36z" fill="none" stroke="currentColor" stroke-width="1.5"/><path class="mark" d="M28 49c10-15 19-15 29 0s19 15 29 0 16-12 23-2M28 70c10-15 19-15 29 0s19 15 29 0 16-12 23-2" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="square"/><path class="steel" d="m49 55 11 9-11 9" fill="none" stroke="currentColor" stroke-width="3.5"/><path class="mark" d="M62 73h18" stroke="currentColor" stroke-width="3.5"/><circle cx="93" cy="29" r="3" fill="currentColor" class="mark"/></svg><div class="word"><b>CYBERSSH</b><small>Secure remote operations</small></div></div>
+      <div class="concept"><strong>Signal / flow</strong><span>Encrypted traffic travels through a pair of controlled waveforms.</span></div>
+    </article>
+
+    <article class="lime selected">
+      <div class="meta"><span>06 / Blacksite console <span class="selected-tag">SELECTED</span></span><span class="num">CS—06</span></div>
+      <div class="lockup"><svg viewBox="0 0 120 120" role="img" aria-label="Rugged terminal aperture with cursor"><path class="mark" d="M27 18h19M18 27v19m84-19V46m-9-28h9v9M18 74v19h19m65-19v19H83" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="square"/><path class="steel" d="M31 39h58v43H31z" fill="none" stroke="currentColor" stroke-width="3"/><path class="mark" d="m43 50 10 10-10 10m17 0h19" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="bevel"/><path class="dim" d="M37 31h46M37 90h46" stroke="currentColor" stroke-width="1.5"/><circle cx="82" cy="46" r="2.5" class="mark" fill="currentColor"/></svg><div class="word"><b>CYBERSSH</b><small>Secure remote operations</small></div></div>
+      <div class="concept"><strong>Field console</strong><span>A compact hardened terminal aperture framed like a service hatch.</span></div>
+    </article>
+
+    <article class="pink">
+      <div class="meta"><span>07 / Spectral lock</span><span class="num">CS—07</span></div>
+      <div class="lockup"><svg viewBox="0 0 120 120" role="img" aria-label="Rotating lock rings and central encrypted prompt"><path class="dim" d="M60 12a48 48 0 1 1-48 48" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="42 8"/><path class="mark" d="M60 21a39 39 0 1 1-39 39" fill="none" stroke="currentColor" stroke-width="4" stroke-dasharray="185 12"/><path class="steel" d="M45 44h30v32H45zM52 44v-7a8 8 0 0 1 16 0v7" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="60" cy="58" r="3" fill="currentColor" class="mark"/><path class="mark" d="M60 61v7" stroke="currentColor" stroke-width="3"/><path class="mark" d="M92 31h12M96 27v8" stroke="currentColor" stroke-width="2"/></svg><div class="word"><b>CYBERSSH</b><small>Secure remote operations</small></div></div>
+      <div class="concept"><strong>Identity / lock</strong><span>Rotating route ring encloses the encrypted access core.</span></div>
+    </article>
+
+    <article class="amber">
+      <div class="meta"><span>08 / Vector relay</span><span class="num">CS—08</span></div>
+      <div class="lockup"><svg viewBox="0 0 120 120" role="img" aria-label="Directional relay chevrons and SSH endpoint"><path class="dim" d="M21 24h78v72H21z" fill="none" stroke="currentColor" stroke-width="1.5"/><path class="mark" d="M35 42h28L50 60l13 18H35M70 42h16L73 60l13 18H70" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="bevel"/><path class="steel" d="M88 60h12m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="3"/><path class="mark" d="M17 34h4m78 52h4" stroke="currentColor" stroke-width="3"/></svg><div class="word"><b>CYBERSSH</b><small>Secure remote operations</small></div></div>
+      <div class="concept"><strong>Relay / direction</strong><span>Nested command chevrons form a forward-moving secure connection.</span></div>
+    </article>
+
+    <article class="ice">
+      <div class="meta"><span>09 / Cold-start core</span><span class="num">CS—09</span></div>
+      <div class="lockup"><svg viewBox="0 0 120 120" role="img" aria-label="Precision turbine core with terminal cursor"><path class="mark" d="M60 12 74 24 94 25 96 45 108 60 96 75 94 95 74 96 60 108 46 96 26 95 24 75 12 60 24 45 26 25 46 24z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="bevel"/><path class="dim" d="M60 25 76 34 85 50v20l-9 16-16 9-16-9-9-16V50l9-16z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="60" cy="60" r="17" fill="none" stroke="currentColor" stroke-width="3" class="steel"/><path class="mark" d="m53 52 9 8-9 8m13 0h8" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linejoin="bevel"/><circle cx="60" cy="12" r="2.5" fill="currentColor" class="mark"/></svg><div class="word"><b>CYBERSSH</b><small>Secure remote operations</small></div></div>
+      <div class="concept"><strong>Precision core</strong><span>Machined turbine geometry contracts around a live command nucleus.</span></div>
+    </article>
+
+    <article class="lime">
+      <div class="meta"><span>10 / Night protocol</span><span class="num">CS—10</span></div>
+      <div class="lockup"><svg viewBox="0 0 120 120" role="img" aria-label="Stealth monogram combining C and SSH prompt"><path class="dim" d="M17 30 32 15h56l15 15v60l-15 15H32L17 90z" fill="none" stroke="currentColor" stroke-width="1.5"/><path class="mark" d="M72 34H51c-12 0-19 7-19 19v14c0 12 7 19 19 19h21" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="square"/><path class="steel" d="m57 47 12 13-12 13" fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="bevel"/><path class="mark" d="M71 73h20" stroke="currentColor" stroke-width="4"/><path class="mark" d="M28 28h10m44 64h10" stroke="currentColor" stroke-width="2"/><circle cx="91" cy="29" r="3" fill="currentColor" class="mark"/></svg><div class="word"><b>CYBERSSH</b><small>Secure remote operations</small></div></div>
+      <div class="concept"><strong>Stealth monogram</strong><span>Compressed C, command chevron, and live cursor in one hard-edged mark.</span></div>
+    </article>
+  </section>
+  <footer><span>CYBERCORE / NETWORK SYSTEMS</span><span>SELECTED MARK · BLACKSITE CONSOLE</span><span>CYBERSSH / 10 MARKS</span></footer>
+</main>
+</body>
+</html>
