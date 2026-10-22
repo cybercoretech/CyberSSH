@@ -7,7 +7,7 @@
   <meta name="description" content="CyberSSH is Cybercore's secure Android SSH console for deliberate remote operations.">
   <title>CyberSSH — Blacksite Console</title>
   <link rel="icon" type="image/svg+xml" href="assets/cyberssh-blacksite-console.svg">
-  <link rel="stylesheet" href="styles.css?v=install-panel-3">
+  <link rel="stylesheet" href="styles.css?v=shared-footer-1">
 </head>
 <body>
   <div class="scanline" aria-hidden="true"></div>
@@ -89,14 +89,14 @@
     <section class="download wrap"><div class="download-logo"><img src="assets/cyberssh-blacksite-console.svg" alt="" width="50" height="50"></div><div><p class="eyebrow">CYBERCORE / BLACKSITE CONSOLE 06</p><h2>Take the console with you.</h2><p>Android-first. Open source. Operator-controlled.</p></div><a class="button primary" href="#install">INSTALL INSTRUCTIONS ↓</a></section>
   </main>
 
-  <footer class="site-footer">
-    <div class="wrap footer-grid">
-      <div class="footer-brand"><a class="brand" href="#top"><img src="assets/cyberssh-blacksite-console.svg" alt="" width="42" height="42"><span><strong>CYBERSSH</strong><small>BLACKSITE CONSOLE / 06</small></span></a><p>Secure remote operations, designed for the operator.</p></div>
-      <div class="footer-col"><b>PROJECT</b><a href="#install">Install CyberSSH</a><a href="#capabilities">Capabilities</a><a href="#trust">Security model</a><a href="#roadmap">Roadmap</a></div>
-      <div class="footer-col"><b>CYBERCORE</b><a href="https://github.com/cybercoretech/CyberSSH">Source repository ↗</a><a href="https://github.com/cybercoretech/CyberSSH/releases">Releases ↗</a><a href="https://github.com/cybercoretech/CyberSSH/issues">Report an issue ↗</a></div>
+  <footer class="site-footer" aria-label="Cybercore shared site footer">
+    <div class="wrap shared-footer-shell">
+      <cybercore-contact repo="CyberSSH">
+        <p><a href="mailto:dev@cybercoretech.net">dev@cybercoretech.net</a> · <a href="https://github.com/cybercoretech/CyberSSH">CyberSSH source</a> · <a href="https://github.com/cybercoretech/CyberSSH/issues">Report an issue</a></p>
+      </cybercore-contact>
     </div>
-    <div class="wrap footer-base"><span>© <span id="year"></span> CYBERCORE SYSTEMS</span><span>CODED BY CYBERCORE · BUILT WITH OPEN SOURCE</span><span>ANDROID / SSH-006</span></div>
   </footer>
+  <script type="module" src="https://cybercoretech.github.io/kit/contact.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

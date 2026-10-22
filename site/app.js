@@ -33,7 +33,8 @@ themeSelect.addEventListener('change', () => {
   }
 });
 
-document.querySelector('#year').textContent = new Date().getFullYear();
+const year = document.querySelector('#year');
+if (year) year.textContent = new Date().getFullYear();
 
 document.querySelectorAll('[data-copy-target]').forEach((button) => {
   button.addEventListener('click', async () => {
