@@ -34,3 +34,24 @@ themeSelect.addEventListener('change', () => {
 });
 
 document.querySelector('#year').textContent = new Date().getFullYear();
+
+document.querySelectorAll('[data-copy-target]').forEach((button) => {
+  button.addEventListener('click', async () => {
+    const command = document.querySelector(`#${button.dataset.copyTarget}`)?.textContent?.trim();
+    if (!command) return;
+    try {
+      await navigator.clipboard.writeText(command);
+    } catch {
+      const temporary = document.createElement('textarea');
+      temporary.value = command;
+      temporary.style.position = 'fixed';
+      temporary.style.opacity = '0';
+      document.body.append(temporary);
+      temporary.select();
+      document.execCommand('copy');
+      temporary.remove();
+    }
+    button.textContent = 'COPIED';
+    window.setTimeout(() => { button.textContent = 'COPY'; }, 1600);
+  });
+});

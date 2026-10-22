@@ -47,6 +47,10 @@ The release variant is built with `./gradlew assembleRelease`. Without a configu
 - [Termux terminal integration spike](docs/TERMINAL-INTEGRATION.md)
 - [CyberSSH landing page](site/index.html)
 
+### 🧰 Install from source
+
+The project site includes a copyable curl command that downloads the installer script. It builds the pinned CyberSSH source locally and installs a debug-signed APK over ADB. It requires JDK 17+, Android SDK platform 36, and exactly one authorized Android device with USB debugging enabled. Review [`scripts/install-android.sh`](scripts/install-android.sh) before running it. This is a developer/test install, not a public release build. See the [Cybercore F-Droid repository](https://cybercoretech.github.io/fdroid/) for its repository access and app availability.
+
 ## 🚀 Connect
 
 1. Enter the SSH host, username, and port (normally `22`).

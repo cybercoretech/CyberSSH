@@ -19,7 +19,7 @@
     <button class="menu-toggle" aria-label="Open site menu" aria-expanded="false" aria-controls="site-menu"><span class="hamburger"><i></i><i></i><i></i></span><b>MENU</b></button>
     <div class="menu-panel" id="site-menu" hidden>
       <p class="eyebrow">NAVIGATE / CYBERSSH</p>
-      <a href="#capabilities">CAPABILITIES <span>01</span></a><a href="#trust">SECURITY MODEL <span>02</span></a><a href="#roadmap">ROADMAP <span>03</span></a>
+      <a href="#install">INSTALL / ANDROID <span>00</span></a><a href="#capabilities">CAPABILITIES <span>01</span></a><a href="#trust">SECURITY MODEL <span>02</span></a><a href="#roadmap">ROADMAP <span>03</span></a>
       <a href="https://github.com/cybercoretech/CyberSSH" target="_blank" rel="noreferrer">SOURCE REPOSITORY <span>↗</span></a>
       <label for="theme-select">CYBERCORE THEME</label>
       <select id="theme-select" aria-label="Choose a Cybercore theme">
@@ -38,7 +38,7 @@
         <h1>REMOTE ACCESS.<br><em>OPERATOR</em><br>CONTROL.</h1>
         <p class="lede">A secure SSH console built for deliberate work. Verify the machine, authenticate directly, and run commands on your terms.</p>
         <div class="hero-actions">
-          <a class="button primary" href="https://github.com/cybercoretech/CyberSSH/releases" target="_blank" rel="noreferrer">GET CYBERSSH <span>↗</span></a>
+          <a class="button primary" href="#install">INSTALL CYBERSSH <span>↓</span></a>
           <a class="button secondary" href="#capabilities">EXPLORE THE SYSTEM <span>↓</span></a>
         </div>
         <div class="signal-row"><span><b></b> SSH TRANSPORT</span><span>HOST KEY PINNING</span><span>ANDROID / KOTLIN</span></div>
@@ -60,6 +60,15 @@
       <div><small>TRANSPORT</small><strong>SSH / MINA</strong></div><div><small>AUTH</small><strong>PASSWORD</strong></div><div><small>HOST TRUST</small><strong>SHA-256 PIN</strong></div><div><small>TERMINAL</small><strong>REMOTE PTY</strong></div>
     </section>
 
+    <section class="install-section wrap" id="install">
+      <div class="install-copy"><p class="eyebrow">ANDROID / SOURCE INSTALL</p><h2>Build it.<br><span>Put it in your hands.</span></h2><p>Run this on a Linux workstation with JDK 17+, Android SDK platform 36, and ADB. Connect one Android device, enable USB debugging, and authorize the computer.</p><a class="text-link" href="https://cybercoretech.github.io/fdroid/" target="_blank" rel="noreferrer">CYBERCORE F-DROID REPOSITORY ↗</a><p class="install-note">This command builds the pinned source locally and installs a debug-signed test build; it is not a public release APK. Use the Cybercore F-Droid page for repository access and app availability.</p></div>
+      <div class="install-terminal" aria-label="CyberSSH source installation command">
+        <div class="install-terminal-head"><span><i></i><i></i><i></i> OPERATOR / LOCAL BUILD</span><span>LINUX · ADB</span></div>
+        <div class="install-command"><span class="prompt">$</span><code id="install-command">curl -fsSL https://raw.githubusercontent.com/cybercoretech/CyberSSH/main/scripts/install-android.sh | bash</code><button class="copy-command" type="button" aria-label="Copy install command" data-copy-target="install-command">COPY</button></div>
+        <p class="terminal-hint">Review the <a href="https://github.com/cybercoretech/CyberSSH/blob/main/scripts/install-android.sh" target="_blank" rel="noreferrer">installer source</a> before running. The script asks before it downloads, builds, or installs.</p>
+      </div>
+    </section>
+
     <section class="section wrap" id="capabilities">
       <div class="section-heading"><div><p class="eyebrow">01 / FIELD CAPABILITIES</p><h2>Built for the connection.</h2></div><p>Lightweight on the surface. Careful where it matters.</p></div>
       <div class="feature-grid">
@@ -76,13 +85,13 @@
       <div class="roadmap-list"><div class="done"><span>0.2</span><strong>Secure SSH connection</strong><small>Password auth · fingerprint pinning · remote PTY</small><b>IN ACTIVE BUILD</b></div><div><span>0.3</span><strong>Full terminal experience</strong><small>Control sequences · resize · keyboard controls</small><b>IN DEVELOPMENT</b></div><div><span>0.4</span><strong>Saved connection profiles</strong><small>Encrypted secrets · host management</small><b>PLANNED</b></div><div><span>0.5</span><strong>Command copilot</strong><small>Explain · diagnose · review before run</small><b>PLANNED</b></div></div>
     </section>
 
-    <section class="download wrap"><div class="download-logo"><img src="assets/cyberssh-blacksite-console.svg" alt="" width="50" height="50"></div><div><p class="eyebrow">CYBERCORE / BLACKSITE CONSOLE 06</p><h2>Take the console with you.</h2><p>Android-first. Open source. Operator-controlled.</p></div><a class="button primary" href="https://github.com/cybercoretech/CyberSSH/releases" target="_blank" rel="noreferrer">VIEW RELEASES ↗</a></section>
+    <section class="download wrap"><div class="download-logo"><img src="assets/cyberssh-blacksite-console.svg" alt="" width="50" height="50"></div><div><p class="eyebrow">CYBERCORE / BLACKSITE CONSOLE 06</p><h2>Take the console with you.</h2><p>Android-first. Open source. Operator-controlled.</p></div><a class="button primary" href="#install">INSTALL INSTRUCTIONS ↓</a></section>
   </main>
 
   <footer class="site-footer">
     <div class="wrap footer-grid">
       <div class="footer-brand"><a class="brand" href="#top"><img src="assets/cyberssh-blacksite-console.svg" alt="" width="42" height="42"><span><strong>CYBERSSH</strong><small>BLACKSITE CONSOLE / 06</small></span></a><p>Secure remote operations, designed for the operator.</p></div>
-      <div class="footer-col"><b>PROJECT</b><a href="#capabilities">Capabilities</a><a href="#trust">Security model</a><a href="#roadmap">Roadmap</a></div>
+      <div class="footer-col"><b>PROJECT</b><a href="#install">Install CyberSSH</a><a href="#capabilities">Capabilities</a><a href="#trust">Security model</a><a href="#roadmap">Roadmap</a></div>
       <div class="footer-col"><b>CYBERCORE</b><a href="https://github.com/cybercoretech/CyberSSH">Source repository ↗</a><a href="https://github.com/cybercoretech/CyberSSH/releases">Releases ↗</a><a href="https://github.com/cybercoretech/CyberSSH/issues">Report an issue ↗</a></div>
     </div>
     <div class="wrap footer-base"><span>© <span id="year"></span> CYBERCORE SYSTEMS</span><span>CODED BY CYBERCORE · BUILT WITH OPEN SOURCE</span><span>ANDROID / SSH-006</span></div>
