@@ -15,12 +15,12 @@
 .site-footer{border-top:1px solid #2a303a;background:linear-gradient(110deg,rgba(0,229,255,.035),transparent 35%),#080a0f}.footer-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:38px;padding-block:39px 32px}.footer-brand p{max-width:260px;color:#778391;font-size:11px;line-height:1.7;margin:12px 0 0}.footer-col{display:flex;flex-direction:column;gap:9px}.footer-col>b{font:9px var(--mono);letter-spacing:1.5px;color:var(--magenta);margin:3px 0 5px}.footer-col a{font-size:11px;color:#96a0ad}.footer-col a:hover{color:var(--cyan)}.footer-base{min-height:49px;display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid #202630;color:#66717e;font:8px var(--mono);letter-spacing:.8px}.footer-base span:nth-child(2){color:#7b8592}.footer-base span:last-child{color:var(--cyan)}
 .shared-footer-shell{padding-block:36px 28px}
 .hero{isolation:isolate}
-.hero::before{content:"";position:absolute;z-index:0;inset:-8px calc((100vw - 100%)/-2) 0;pointer-events:none;background-image:linear-gradient(90deg,#07080d 0%,rgba(7,8,13,.97) 26%,rgba(7,8,13,.84) 43%,rgba(7,8,13,.44) 63%,rgba(7,8,13,.12) 100%),url("assets/blacksite-operations-bay.webp");background-size:cover;background-position:center right;background-repeat:no-repeat;opacity:.96}
+.hero::before{content:"";position:absolute;z-index:0;inset:-8px calc((100vw - 100%)/-2) 0;pointer-events:none;background-image:linear-gradient(90deg,#07080d 0%,rgba(7,8,13,.97) 26%,rgba(7,8,13,.84) 43%,rgba(7,8,13,.44) 63%,rgba(7,8,13,.12) 100%),url("assets/blacksite-command-bay.svg");background-size:cover;background-position:center right;background-repeat:no-repeat;opacity:.96}
 .hero-copy,.console-card{position:relative;z-index:2}
 .hero-grid{z-index:1;opacity:.22}
 body[data-theme="hunter"]{--cyan:#a5ff3d;--magenta:#ffc14f;--lime:#70ff6a;--violet:#35dce6}body[data-theme="glitch"]{--cyan:#b85cff;--magenta:#ff2c9c;--lime:#00e5ff;--violet:#8f56ff}
 @media(max-width:700px){.menu-panel{right:17px}.footer-grid{grid-template-columns:1fr 1fr;gap:25px;padding-block:28px}.footer-brand{grid-column:1/-1}.footer-base{padding-block:14px;flex-wrap:wrap}.footer-base span:nth-child(2){flex-basis:100%;order:3}}
-@media(max-width:700px){.hero::before{inset:-4px calc((100vw - 100%)/-2) 0;opacity:.7;background-position:65% center;background-image:linear-gradient(180deg,rgba(7,8,13,.92),rgba(7,8,13,.72) 54%,rgba(7,8,13,.9)),url("assets/blacksite-operations-bay.webp")}}
+@media(max-width:700px){.hero::before{inset:-4px calc((100vw - 100%)/-2) 0;opacity:.7;background-position:65% center;background-image:linear-gradient(180deg,rgba(7,8,13,.92),rgba(7,8,13,.72) 54%,rgba(7,8,13,.9)),url("assets/blacksite-command-bay.svg")}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{transition:none!important}}
 
 /* Local Android build and install panel. */
