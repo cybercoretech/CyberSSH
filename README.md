@@ -2,9 +2,11 @@
 
 CyberSSH is Cybercore's Android-first SSH workspace: a focused host manager, interactive remote terminal, and optional AI command copilot. The operator stays in control: suggestions are reviewed before use, and the app never runs an AI-generated command automatically.
 
+🌐 **Project site:** [cybercoretech.github.io/CyberSSH](https://cybercoretech.github.io/CyberSSH/) · [Source code](https://github.com/cybercoretech/CyberSSH)
+
 ## 🧭 Current build
 
-This repository currently contains the first Android shell and visual direction, project configuration, and dependency wiring for Apache MINA SSHD and Termux's terminal libraries. The current screen flow is a UI scaffold; SSH authentication, host-key persistence, the remote terminal adapter, and AI provider integration are not complete yet. In particular, Termux `TerminalView` expects a `TerminalSession` backed by a local PTY, while an SSH client provides remote channel streams. The integration must bridge those models deliberately instead of accidentally opening a local shell and presenting it as remote.
+CyberSSH now connects to SSH servers with Apache MINA SSHD using password authentication, verifies and pins host keys, and opens a remote PTY shell. The current terminal is a line-oriented remote shell view; full-screen terminal applications, resize signaling, key-based authentication, saved connection profiles, SFTP, and AI integration remain planned. Termux's emulator libraries are included for a later terminal-rendering adapter; the app never starts a local shell and labels only the remote channel as a session.
 
 ## 🧰 Stack
 
@@ -28,9 +30,11 @@ Install JDK 17 or newer and Android SDK platform 36, then run:
 
 The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
 
+The release variant is built with `./gradlew assembleRelease`. Without a configured release keystore, Android writes an unsigned APK; sign it with a dedicated distribution key before sharing it. To preview the Pages site locally, run `python3 -m http.server 8080 --directory site` from the repository root and open `http://localhost:8080`.
+
 ## 🔐 Security principles
 
-- Verify and display a server's host-key fingerprint before sending credentials.
+- Probe and display a server's SHA-256 host-key fingerprint before sending credentials on first contact.
 - Never silently accept a changed host key; explain the mismatch and stop.
 - Keep passwords and passphrases in memory only. Encrypt saved keys and secrets with Android Keystore-backed keys.
 - Treat AI as an optional advisor. Send only context the user explicitly selects, redact secrets, label destructive commands, and require a deliberate operator action before terminal input.
@@ -41,6 +45,23 @@ The debug APK is written to `app/build/outputs/apk/debug/app-debug.apk`.
 - [Architecture and delivery plan](docs/ARCHITECTURE.md)
 - [Security model](docs/SECURITY.md)
 - [Termux terminal integration spike](docs/TERMINAL-INTEGRATION.md)
+- [CyberSSH landing page](site/index.html)
+
+## 🚀 Connect
+
+1. Enter the SSH host, username, and port (normally `22`).
+2. Enter the account password. On first contact, CyberSSH displays the server's SHA-256 fingerprint **before sending the password**. Compare it with a trusted source, then choose **Trust Host & Connect**.
+3. After the host key is pinned, CyberSSH authenticates and opens a remote shell. Commands are sent only when you submit them.
+
+Known host fingerprints are stored in app-private preferences, keyed by host and port. A changed key is rejected. Password authentication is currently supported; private-key authentication is not yet available in this release.
+
+### 📦 Local release build
+
+```sh
+./gradlew assembleRelease
+```
+
+The APK is produced at `app/build/outputs/apk/release/app-release-unsigned.apk` unless a local signing configuration is supplied. Do not distribute a locally debug-signed APK as a public release; configure a dedicated signing key for distribution.
 
 ## 📄 Licensing
 

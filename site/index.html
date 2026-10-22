@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080b10">
+  <meta name="description" content="CyberSSH is Cybercore's secure Android SSH console for deliberate remote operations.">
+  <title>CyberSSH — Blacksite Console</title>
+  <link rel="icon" type="image/svg+xml" href="assets/cyberssh-blacksite-console.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="scanline" aria-hidden="true"></div>
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="CyberSSH home">
+      <img src="assets/cyberssh-blacksite-console.svg" alt="" width="38" height="38">
+      <span><strong>CYBERSSH</strong><small>BLACKSITE CONSOLE / 06</small></span>
+    </a>
+    <button class="menu-toggle" aria-label="Open site menu" aria-expanded="false" aria-controls="site-menu"><span class="hamburger"><i></i><i></i><i></i></span><b>MENU</b></button>
+    <div class="menu-panel" id="site-menu" hidden>
+      <p class="eyebrow">NAVIGATE / CYBERSSH</p>
+      <a href="#capabilities">CAPABILITIES <span>01</span></a><a href="#trust">SECURITY MODEL <span>02</span></a><a href="#roadmap">ROADMAP <span>03</span></a>
+      <a href="https://github.com/cybercoretech/CyberSSH" target="_blank" rel="noreferrer">SOURCE REPOSITORY <span>↗</span></a>
+      <label for="theme-select">CYBERCORE THEME</label>
+      <select id="theme-select" aria-label="Choose a Cybercore theme">
+        <option value="blacksite">06 / Blacksite Console</option>
+        <option value="hunter">Cyberdyne Hunter</option>
+        <option value="glitch">Cyberpunk Glitch</option>
+      </select>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero wrap">
+      <div class="hero-copy">
+        <p class="eyebrow"><i></i> CYBERCORE / REMOTE OPERATIONS</p>
+        <p class="serial">CC / SSH-006 <span>ANDROID CLIENT · ACTIVE BUILD</span></p>
+        <h1>REMOTE ACCESS.<br><em>OPERATOR</em><br>CONTROL.</h1>
+        <p class="lede">A secure SSH console built for deliberate work. Verify the machine, authenticate directly, and run commands on your terms.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="https://github.com/cybercoretech/CyberSSH/releases" target="_blank" rel="noreferrer">GET CYBERSSH <span>↗</span></a>
+          <a class="button secondary" href="#capabilities">EXPLORE THE SYSTEM <span>↓</span></a>
+        </div>
+        <div class="signal-row"><span><b></b> SSH TRANSPORT</span><span>HOST KEY PINNING</span><span>ANDROID / KOTLIN</span></div>
+      </div>
+      <aside class="console-card" aria-label="CyberSSH Blacksite Console identity card">
+        <div class="card-head"><span><i></i><i></i><i></i> CYBERCORE / BLACKSITE</span><span class="live">SYSTEM 06</span></div>
+        <div class="card-body">
+          <div class="logo-frame"><div class="corner c1"></div><div class="corner c2"></div><img src="assets/cyberssh-blacksite-console.svg" alt="CyberSSH Blacksite Console mark"></div>
+          <p class="micro">REMOTE OPERATIONS / FIELD CONSOLE</p>
+          <h2>SECURE SHELL<br><span>ESTABLISHED BY YOU.</span></h2>
+          <div class="terminal-lines"><p><b>01</b> HOST KEY <strong>VERIFIED</strong></p><p><b>02</b> CREDENTIALS <strong>LOCAL ONLY</strong></p><p><b>03</b> COMMAND FLOW <strong>OPERATOR LED</strong></p></div>
+        </div>
+        <div class="card-foot"><span>CYBERCORE SYSTEMS</span><span>DW / 06.0</span></div>
+      </aside>
+      <div class="hero-grid" aria-hidden="true"></div>
+    </section>
+
+    <section class="status-strip" aria-label="Project status">
+      <div><small>TRANSPORT</small><strong>SSH / MINA</strong></div><div><small>AUTH</small><strong>PASSWORD</strong></div><div><small>HOST TRUST</small><strong>SHA-256 PIN</strong></div><div><small>TERMINAL</small><strong>REMOTE PTY</strong></div>
+    </section>
+
+    <section class="section wrap" id="capabilities">
+      <div class="section-heading"><div><p class="eyebrow">01 / FIELD CAPABILITIES</p><h2>Built for the connection.</h2></div><p>Lightweight on the surface. Careful where it matters.</p></div>
+      <div class="feature-grid">
+        <article class="feature"><div class="feature-icon cyan">⌁</div><p class="micro">IDENTITY / 01</p><h3>Verify the host.</h3><p>First contact shows the server’s SHA-256 fingerprint before credentials are sent. You approve and pin it; changed keys are rejected.</p><span class="index">01</span></article>
+        <article class="feature"><div class="feature-icon green">›_</div><p class="micro">SHELL / 02</p><h3>Work remotely.</h3><p>Open a remote pseudo-terminal and send commands over the authenticated SSH channel. CyberSSH never launches a local shell.</p><span class="index">02</span></article>
+        <article class="feature"><div class="feature-icon titanium">◈</div><p class="micro">CONTROL / 03</p><h3>Stay in control.</h3><p>Credentials remain in memory for the connection attempt. Nothing is saved or sent to an AI service.</p><span class="index">03</span></article>
+      </div>
+    </section>
+
+    <section class="trust-band" id="trust"><div class="wrap trust-inner"><div><p class="eyebrow">02 / SECURITY SEQUENCE</p><h2>Trust is a decision.<br><span>Not a default.</span></h2><p class="trust-copy">CyberSSH pauses on an unknown server, presents its fingerprint, and waits for your verification. After approval, that host and port are pinned to the accepted key.</p><a class="text-link" href="https://github.com/cybercoretech/CyberSSH/blob/main/docs/SECURITY.md">READ THE SECURITY MODEL ↗</a></div><div class="sequence"><div><b>01</b><span>KEY EXCHANGE</span><small>No password sent</small></div><div><b>02</b><span>FINGERPRINT REVIEW</span><small>Operator verifies</small></div><div><b>03</b><span>AUTHENTICATE</span><small>Only after approval</small></div><div><b>04</b><span>REMOTE SHELL</span><small>Host key remains pinned</small></div></div></div></section>
+
+    <section class="section wrap roadmap" id="roadmap">
+      <div class="section-heading"><div><p class="eyebrow">03 / DEVELOPMENT STATUS</p><h2>Shipping in deliberate stages.</h2></div><p>Open development. Visible scope. No pretend features.</p></div>
+      <div class="roadmap-list"><div class="done"><span>0.2</span><strong>Secure SSH connection</strong><small>Password auth · fingerprint pinning · remote PTY</small><b>IN ACTIVE BUILD</b></div><div><span>0.3</span><strong>Full terminal experience</strong><small>Control sequences · resize · keyboard controls</small><b>IN DEVELOPMENT</b></div><div><span>0.4</span><strong>Saved connection profiles</strong><small>Encrypted secrets · host management</small><b>PLANNED</b></div><div><span>0.5</span><strong>Command copilot</strong><small>Explain · diagnose · review before run</small><b>PLANNED</b></div></div>
+    </section>
+
+    <section class="download wrap"><div class="download-logo"><img src="assets/cyberssh-blacksite-console.svg" alt="" width="50" height="50"></div><div><p class="eyebrow">CYBERCORE / BLACKSITE CONSOLE 06</p><h2>Take the console with you.</h2><p>Android-first. Open source. Operator-controlled.</p></div><a class="button primary" href="https://github.com/cybercoretech/CyberSSH/releases" target="_blank" rel="noreferrer">VIEW RELEASES ↗</a></section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div class="footer-brand"><a class="brand" href="#top"><img src="assets/cyberssh-blacksite-console.svg" alt="" width="42" height="42"><span><strong>CYBERSSH</strong><small>BLACKSITE CONSOLE / 06</small></span></a><p>Secure remote operations, designed for the operator.</p></div>
+      <div class="footer-col"><b>PROJECT</b><a href="#capabilities">Capabilities</a><a href="#trust">Security model</a><a href="#roadmap">Roadmap</a></div>
+      <div class="footer-col"><b>CYBERCORE</b><a href="https://github.com/cybercoretech/CyberSSH">Source repository ↗</a><a href="https://github.com/cybercoretech/CyberSSH/releases">Releases ↗</a><a href="https://github.com/cybercoretech/CyberSSH/issues">Report an issue ↗</a></div>
+    </div>
+    <div class="wrap footer-base"><span>© <span id="year"></span> CYBERCORE SYSTEMS</span><span>CODED BY CYBERCORE · BUILT WITH OPEN SOURCE</span><span>ANDROID / SSH-006</span></div>
+  </footer>
+  <script src="app.js"></script>
+</body>
+</html>

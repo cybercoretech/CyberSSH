@@ -8,16 +8,16 @@ CyberSSH is an Android app built around SSH operations rather than a generic loc
 
 1. **Presentation:** Compose screens for connections, fingerprint review, authentication, terminal, files, and AI assistance.
 2. **Application:** lifecycle-aware connection/session orchestration, cancellation, reconnect state, and operator decisions.
-3. **SSH transport:** MINA client, strict host-key verification, interactive shell and SFTP channels.
-4. **Terminal:** Termux emulator parses terminal control sequences; Android terminal view provides rendering and input. The SSH stream adapter translates terminal input into channel writes and channel output into emulator input.
+3. **SSH transport:** MINA client, pinned host-key verification, password authentication, and a remote PTY shell. SFTP is planned.
+4. **Terminal:** The current release displays remote output in a line-oriented Compose shell and sends submitted commands to the PTY. Termux terminal-emulator integration, full ANSI behavior, terminal key input, and resize propagation remain planned.
 5. **Persistence:** Room for non-secret connection metadata; Android Keystore-wrapped encrypted storage for credentials and accepted fingerprints.
 6. **AI boundary:** provider interface with explicit context selection, redaction, and a command-review card. AI must not receive credentials or execute commands.
 
 ## Initial milestones
 
 - **0.1 Shell:** Compose app structure, colors, navigation, and build baseline.
-- **0.2 Secure SSH:** endpoint validation, first-contact fingerprint review, password/key auth, cancellation, and failure states.
-- **0.3 Terminal:** real PTY allocation over SSH, terminal sizing/resizing, ANSI rendering, IME, extra keys, scrollback, and disconnect recovery.
+- **0.2 Secure SSH:** endpoint validation, first-contact fingerprint review, password authentication, pinned keys, remote PTY, and visible failure states (implemented in the current working build).
+- **0.3 Terminal:** full-screen terminal rendering, terminal sizing/resizing, ANSI control sequences, IME, extra keys, scrollback, and disconnect recovery.
 - **0.4 Connections:** saved hosts and encrypted credential references.
 - **0.5 Assistant:** pluggable provider, explain/translate/diagnose, redaction, risk classification, and explicit copy/send actions.
 - **0.6 Files:** SFTP browser and safe transfer progress.

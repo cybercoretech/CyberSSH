@@ -2,11 +2,15 @@
 
 ## SSH trust
 
-The first connection to a host must stop at a fingerprint review step. Acceptance stores a host-key pin. A later key change is a hard failure with the old and newly observed fingerprints shown to the user; there is no silent fallback to trust-on-first-use again.
+On first contact, CyberSSH probes the server key without sending credentials or opening a shell. It displays the SHA-256 fingerprint and waits for explicit operator approval. Approval pins that fingerprint to the exact host and port in app-private preferences. Later key changes fail closed; the app does not silently trust a replacement key.
 
 ## Credentials
 
-Password and key passphrases stay in memory for the active authentication attempt and are cleared as soon as practical. Saved private keys are encrypted with a non-exportable Android Keystore key. Never store a private key or password in ordinary preferences, logs, crash reports, or AI context.
+The current release supports passwords only. A password remains in process memory for the active connection attempt, is cleared after successful authentication or when leaving the authentication screen, and is never written to preferences or logs. Private-key authentication and saved credential storage are not implemented yet. Never store a private key or password in ordinary preferences, logs, crash reports, or AI context.
+
+## Remote shell
+
+The app opens an authenticated remote PTY shell and sends only text the operator submits. The current Compose terminal displays streamed text and supports line-oriented commands; full-screen terminal control-sequence rendering, resize updates, and interactive terminal applications are not implemented yet. The app does not start a local shell.
 
 ## AI boundary
 

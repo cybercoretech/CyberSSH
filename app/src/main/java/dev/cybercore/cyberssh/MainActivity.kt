@@ -39,6 +39,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.foundation.Image
@@ -46,6 +47,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -56,9 +58,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import dev.cybercore.cyberssh.ui.theme.CyberSSHTheme
 import dev.cybercore.cyberssh.R
 import androidx.compose.ui.res.painterResource
@@ -78,16 +85,83 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-private enum class Screen { DASHBOARD, CONNECT, SESSION }
+private enum class Screen { DASHBOARD, CONNECT, AUTHENTICATION, SESSION }
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 private fun CyberSSHApp() {
+    val context = LocalContext.current.applicationContext
+    val endpointPreferences = remember(context) { context.getSharedPreferences("last_endpoint", android.content.Context.MODE_PRIVATE) }
     var screen by rememberSaveable { mutableStateOf(Screen.DASHBOARD) }
-    var host by rememberSaveable { mutableStateOf("") }
-    var username by rememberSaveable { mutableStateOf("") }
-    var port by rememberSaveable { mutableStateOf("22") }
+    var host by rememberSaveable { mutableStateOf(endpointPreferences.getString("host", "").orEmpty()) }
+    var username by rememberSaveable { mutableStateOf(endpointPreferences.getString("username", "").orEmpty()) }
+    var port by rememberSaveable { mutableStateOf(endpointPreferences.getString("port", "22").orEmpty()) }
     var notice by rememberSaveable { mutableStateOf("") }
+    var authSecret by remember { mutableStateOf("") }
+    var authBusy by remember { mutableStateOf(false) }
+    var pendingFingerprint by rememberSaveable { mutableStateOf<String?>(null) }
+    var terminalOutput by rememberSaveable { mutableStateOf("") }
+    var remoteShell by remember { mutableStateOf<RemoteShell?>(null) }
+    val sshManager = remember(context) { SshConnectionManager(context) }
+    val scope = rememberCoroutineScope()
+
+    fun openSsh(expectedFingerprint: String) {
+        authBusy = true
+        notice = "Opening an SSH session…"
+        scope.launch {
+            try {
+                val password = authSecret
+                val connected = withContext(Dispatchers.IO) {
+                    sshManager.connect(host.trim(), port.toInt(), username.trim(), password, expectedFingerprint) { chunk ->
+                        scope.launch {
+                            val clean = chunk.replace(Regex("\\u001B\\[[;\\d?]*[ -/]*[@-~]"), "").replace("\u001B", "").replace("\r", "")
+                            terminalOutput = (terminalOutput + clean).takeLast(24_000)
+                        }
+                    }
+                }
+                remoteShell = connected
+                authSecret = ""
+                pendingFingerprint = null
+                notice = ""
+                screen = Screen.SESSION
+            } catch (failure: Throwable) {
+                notice = when {
+                    failure.message.orEmpty().contains("Auth", ignoreCase = true) -> "Authentication failed. Check the username and password."
+                    failure.message.orEmpty().contains("key", ignoreCase = true) || failure.message.orEmpty().contains("verify", ignoreCase = true) -> "Server host key verification failed. The pinned key was not changed, and no password was sent."
+                    else -> "SSH connection failed: ${failure.message ?: failure.javaClass.simpleName}"
+                }
+            } finally {
+                authBusy = false
+            }
+        }
+    }
+
+    fun startAuthentication() {
+        if (authSecret.isBlank()) {
+            notice = "Enter the account password."
+            return
+        }
+        authBusy = true
+        notice = "Checking the server identity…"
+        scope.launch {
+            var connectWith: String? = null
+            try {
+                val known = sshManager.knownFingerprint(host.trim(), port.toInt())
+                if (known != null) {
+                    connectWith = known
+                } else {
+                    val observed = withContext(Dispatchers.IO) { sshManager.probeFingerprint(host.trim(), port.toInt(), username.trim()) }
+                    pendingFingerprint = observed
+                    notice = "First contact: compare this fingerprint with your server administrator before trusting it. No password has been sent."
+                }
+            } catch (failure: Throwable) {
+                notice = "Could not verify server identity: ${failure.message ?: failure.javaClass.simpleName}"
+            } finally {
+                if (connectWith == null) authBusy = false
+            }
+            connectWith?.let(::openSsh)
+        }
+    }
 
     Scaffold(
         containerColor = Background,
@@ -113,7 +187,15 @@ private fun CyberSSHApp() {
                 },
                 navigationIcon = {
                     if (screen != Screen.DASHBOARD) {
-                        IconButton(onClick = { screen = Screen.DASHBOARD; notice = "" }) {
+                        IconButton(onClick = {
+                            if (screen == Screen.AUTHENTICATION) screen = Screen.CONNECT else screen = Screen.DASHBOARD
+                        if (screen == Screen.DASHBOARD) {
+                                remoteShell?.close(); remoteShell = null; authSecret = ""; pendingFingerprint = null
+                        } else if (screen == Screen.CONNECT) {
+                            authSecret = ""; pendingFingerprint = null
+                            }
+                            notice = ""
+                        }) {
                             Icon(Icons.Outlined.ArrowBack, contentDescription = "Back", tint = Cyan)
                         }
                     }
@@ -132,23 +214,115 @@ private fun CyberSSHApp() {
             Screen.CONNECT -> ConnectScreen(
                 modifier = Modifier.padding(padding),
                 host = host,
-                onHost = { host = it },
+                onHost = { host = it; endpointPreferences.edit().putString("host", it).apply() },
                 username = username,
-                onUsername = { username = it },
+                onUsername = { username = it; endpointPreferences.edit().putString("username", it).apply() },
                 port = port,
-                onPort = { port = it.filter(Char::isDigit).take(5) },
+                onPort = { port = it.filter(Char::isDigit).take(5); endpointPreferences.edit().putString("port", port).apply() },
                 notice = notice,
                 onConnect = {
-                    notice = when {
+                    val validation = when {
                         host.isBlank() -> "Enter a hostname or IP address."
                         username.isBlank() -> "Enter the SSH username."
                         port.toIntOrNull() !in 1..65535 -> "Port must be between 1 and 65535."
-                        else -> "Connection transport is being wired. Your fields are held in memory only."
+                        else -> ""
+                    }
+                    notice = validation
+                    if (validation.isEmpty()) {
+                        authSecret = ""
+                        screen = Screen.AUTHENTICATION
                     }
                 },
             )
-            Screen.SESSION -> SessionScreen(Modifier.padding(padding), host)
+            Screen.AUTHENTICATION -> AuthenticationScreen(
+                modifier = Modifier.padding(padding),
+                host = host,
+                username = username,
+                port = port,
+                secret = authSecret,
+                onSecret = { authSecret = it },
+                notice = notice,
+                onAuthenticate = ::startAuthentication,
+                pendingFingerprint = pendingFingerprint,
+                busy = authBusy,
+                onCancelTrust = { pendingFingerprint = null; notice = "" },
+                onTrustAndConnect = {
+                    val fingerprint = pendingFingerprint
+                    if (fingerprint != null) {
+                        sshManager.trustFingerprint(host.trim(), port.toInt(), fingerprint)
+                        openSsh(fingerprint)
+                    }
+                },
+            )
+            Screen.SESSION -> SessionScreen(
+                modifier = Modifier.padding(padding),
+                host = host,
+                output = terminalOutput,
+                onSend = { command -> remoteShell?.send(command + "\n") },
+            )
         }
+    }
+}
+
+@Composable
+private fun AuthenticationScreen(
+    modifier: Modifier,
+    host: String,
+    username: String,
+    port: String,
+    secret: String,
+    onSecret: (String) -> Unit,
+    notice: String,
+    onAuthenticate: () -> Unit,
+    pendingFingerprint: String?,
+    busy: Boolean,
+    onTrustAndConnect: () -> Unit,
+    onCancelTrust: () -> Unit,
+) {
+    Column(
+        modifier = modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(horizontal = 18.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(14.dp),
+    ) {
+        Eyebrow("02 / AUTHENTICATION")
+        Text("Verify your identity", color = Color.White, fontSize = 27.sp, fontWeight = FontWeight.Bold)
+        Text("${username}@${host}:$port", color = Cyan, fontFamily = FontFamily.Monospace, fontSize = 12.sp)
+        Card(colors = CardDefaults.cardColors(containerColor = SurfaceColor), shape = RoundedCornerShape(16.dp)) {
+            Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(13.dp)) {
+                OutlinedTextField(
+                    value = secret,
+                    onValueChange = onSecret,
+                    modifier = Modifier.fillMaxWidth(),
+                    label = { Text("Account password") },
+                    placeholder = { Text("Password") },
+                    singleLine = true,
+                    visualTransformation = PasswordVisualTransformation(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = Color.White,
+                        unfocusedTextColor = Color.White,
+                        focusedBorderColor = Cyan,
+                        unfocusedBorderColor = Color(0xFF2B3945),
+                        cursorColor = Cyan,
+                        focusedContainerColor = Color(0xFF0A0F15),
+                        unfocusedContainerColor = Color(0xFF0A0F15),
+                    ),
+                )
+                ActionButton(label = if (busy) "CONNECTING…" else "AUTHENTICATE", onClick = onAuthenticate, modifier = Modifier.fillMaxWidth(), enabled = !busy)
+                if (pendingFingerprint != null) {
+                    Column(
+                        Modifier.fillMaxWidth().background(Color(0xFF090E13), RoundedCornerShape(9.dp)).border(1.dp, Color(0xFF3A4A55), RoundedCornerShape(9.dp)).padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        Eyebrow("FIRST-CONTACT HOST KEY")
+                        Text(pendingFingerprint, color = Green, fontFamily = FontFamily.Monospace, fontSize = 11.sp)
+                        Text("Verify this fingerprint through a trusted channel before accepting it. Accepting pins this key for this host and port.", color = Muted, fontSize = 11.sp, lineHeight = 15.sp)
+                        ActionButton(label = if (busy) "CONNECTING…" else "TRUST HOST & CONNECT", onClick = onTrustAndConnect, modifier = Modifier.fillMaxWidth(), enabled = !busy)
+                        TextButton(onClick = onCancelTrust) { Text("CANCEL", color = Muted, fontFamily = FontFamily.Monospace) }
+                    }
+                }
+            }
+        }
+        if (notice.isNotBlank()) NoticeCard(notice)
+        Text("Passwords are sent only after the pinned host key is accepted. Credentials are held in memory and cleared when you leave this step.", color = Muted, fontSize = 11.sp, lineHeight = 16.sp)
     }
 }
 
@@ -231,32 +405,45 @@ private fun ConnectScreen(
             }
         }
         if (notice.isNotBlank()) NoticeCard(notice)
-        Text("Passwords are session-only. Key files are encrypted at rest using Android Keystore-backed protection.", color = Muted, fontSize = 11.sp, lineHeight = 16.sp)
+        Text("Password authentication is supported. Credentials remain in memory for the connection attempt and are not saved.", color = Muted, fontSize = 11.sp, lineHeight = 16.sp)
     }
 }
 
 @Composable
-private fun SessionScreen(modifier: Modifier, host: String) {
+private fun SessionScreen(modifier: Modifier, host: String, output: String, onSend: (String) -> Unit) {
+    var command by remember { mutableStateOf("") }
     Column(modifier.fillMaxSize().padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Eyebrow("SSH / CONNECTED SESSION")
         Text(host, color = Color.White, fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        TerminalPreview()
-        Text("Terminal transport adapter is not connected yet.", color = Muted, fontSize = 12.sp)
-    }
-}
-
-@Composable
-private fun TerminalPreview() {
-    Column(
-        Modifier.fillMaxWidth().height(320.dp).background(Color(0xFF05080C), RoundedCornerShape(12.dp)).border(1.dp, Color(0xFF263642), RoundedCornerShape(12.dp)).padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(7.dp),
-    ) {
-        Text("REMOTE TERMINAL / PREVIEW", color = Cyan, fontFamily = FontFamily.Monospace, fontSize = 10.sp, letterSpacing = 1.sp)
-        Spacer(Modifier.height(4.dp))
-        Text("No remote process attached", color = Muted, fontFamily = FontFamily.Monospace, fontSize = 12.sp)
-        Text("Connect to a host to open an interactive shell.", color = Muted, fontFamily = FontFamily.Monospace, fontSize = 11.sp)
-        Spacer(Modifier.weight(1f))
-        Text("$", color = Green, fontFamily = FontFamily.Monospace, fontSize = 14.sp)
+        Column(
+            Modifier.weight(1f).fillMaxWidth().background(Color(0xFF05080C), RoundedCornerShape(12.dp)).border(1.dp, Color(0xFF263642), RoundedCornerShape(12.dp)).padding(12.dp),
+        ) {
+            Eyebrow("REMOTE SHELL / XTERM-256COLOR")
+            Spacer(Modifier.height(8.dp))
+            Text(
+                output.ifBlank { "SSH channel open. Type a command below and press SEND.\n" },
+                color = Color(0xFFD5E1E8),
+                fontFamily = FontFamily.Monospace,
+                fontSize = 12.sp,
+                lineHeight = 17.sp,
+                modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+            )
+        }
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            OutlinedTextField(
+                value = command,
+                onValueChange = { command = it },
+                modifier = Modifier.weight(1f),
+                singleLine = true,
+                label = { Text("Remote command") },
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+                colors = OutlinedTextFieldDefaults.colors(focusedTextColor = Color.White, unfocusedTextColor = Color.White, focusedBorderColor = Cyan, unfocusedBorderColor = Color(0xFF2B3945), cursorColor = Cyan),
+            )
+            Button(onClick = { if (command.isNotBlank()) { onSend(command); command = "" } }, colors = ButtonDefaults.buttonColors(containerColor = Cyan, contentColor = Background)) {
+                Text("SEND", fontFamily = FontFamily.Monospace, fontSize = 11.sp)
+            }
+        }
+        Text("Password auth • host key pinned", color = Muted, fontFamily = FontFamily.Monospace, fontSize = 10.sp)
     }
 }
 
@@ -304,10 +491,11 @@ private fun CyberField(label: String, value: String, onValue: (String) -> Unit, 
 }
 
 @Composable
-private fun ActionButton(label: String, onClick: () -> Unit, modifier: Modifier = Modifier, icon: (@Composable () -> Unit)? = null) {
+private fun ActionButton(label: String, onClick: () -> Unit, modifier: Modifier = Modifier, icon: (@Composable () -> Unit)? = null, enabled: Boolean = true) {
     Button(
         onClick = onClick,
         modifier = modifier.height(46.dp),
+        enabled = enabled,
         shape = RoundedCornerShape(11.dp),
         colors = ButtonDefaults.buttonColors(containerColor = Cyan, contentColor = Background),
     ) {
