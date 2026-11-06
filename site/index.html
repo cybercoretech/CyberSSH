@@ -29,13 +29,19 @@
         <option value="glitch">Cyberpunk Glitch</option>
       </select>
     </div>
-  </header>
+  <div class="theme-picker" id="picker">
+  <button class="theme-button" id="themeButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="themeMenu" title="Theme (T)">
+    <i class="theme-swatch" aria-hidden="true"></i><span id="themeLabel">LOADING…</span><span class="theme-chevron" aria-hidden="true">⌄</span>
+  </button>
+  <div class="theme-menu" id="themeMenu" hidden></div>
+</div>
 <div class="theme-picker" id="picker">
   <button class="theme-button" id="themeButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="themeMenu" title="Theme (T)">
     <i class="theme-swatch" aria-hidden="true"></i><span id="themeLabel">LOADING…</span><span class="theme-chevron" aria-hidden="true">⌄</span>
   </button>
   <div class="theme-menu" id="themeMenu" hidden></div>
 </div>
+</header>
 
   <main id="top">
     <section class="hero wrap">
