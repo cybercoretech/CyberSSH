@@ -10,9 +10,8 @@
   <link rel="stylesheet" href="styles.css?v=shared-footer-1">
   <link rel="stylesheet" href="https://cybercoretech.github.io/kit/chooser.css">
   <style>
-    .menu-panel .theme-select-label{display:block;margin:19px 0 8px;color:#778391;font:.75rem var(--mono);letter-spacing:1.2px}
-    #site-menu cybercore-theme-chooser{--ccx-font:var(--mono);--ccx-fg:var(--text);--ccx-bg:var(--panel);--ccx-accent:#39434e;--ccx-button-bg:#080b10;--ccx-button-fg:var(--cyan);--ccx-focus:var(--cyan);--ccx-button-width:100%;--ccx-button-max:100%;--ccx-glow:0;width:100%}
-    #site-menu cybercore-theme-chooser .ccx-picker{flex:1}
+    .topbar-actions{display:flex;align-items:center;gap:10px}
+    .topbar-actions cybercore-theme-chooser{--ccx-font:var(--mono);--ccx-size:10px;--ccx-tracking:1.1px;--ccx-fg:var(--text);--ccx-bg:var(--panel);--ccx-line:#36414d;--ccx-accent:var(--cyan);--ccx-focus:var(--cyan);--ccx-field:#080b10;--ccx-button-bg:#10151c;--ccx-button-fg:var(--cyan);--ccx-button-border:#36414d;--ccx-radius:0;--ccx-height:40px;--ccx-button-width:auto;--ccx-glow:0}
   </style>
   <script>window.SITE = Object.assign(window.SITE || {}, {"siteLabel": "Blacksite Console", "themeVars": {"white": "--text", "hot_pink": "--magenta", "acid_green": "--lime", "purple": "--violet"}});</script>
   <script type="module" src="https://cybercoretech.github.io/kit/chooser.js"></script>
@@ -24,14 +23,15 @@
       <img src="assets/cyberssh-blacksite-console.svg" alt="" width="38" height="38">
       <span><strong>CYBERSSH</strong><small>BLACKSITE CONSOLE / 06</small></span>
     </a>
+    <div class="topbar-actions">
     <button class="menu-toggle" aria-label="Open site menu" aria-expanded="false" aria-controls="site-menu"><span class="hamburger"><i></i><i></i><i></i></span><b>MENU</b></button>
     <div class="menu-panel" id="site-menu" hidden>
       <p class="eyebrow">NAVIGATE / CYBERSSH</p>
       <a href="#install">INSTALL / ANDROID <span>00</span></a><a href="#capabilities">CAPABILITIES <span>01</span></a><a href="#trust">SECURITY MODEL <span>02</span></a><a href="#roadmap">ROADMAP <span>03</span></a>
       <a href="https://github.com/cybercoretech/CyberSSH" target="_blank" rel="noreferrer">SOURCE REPOSITORY <span>↗</span></a>
       <a data-cybercore-master-docs href="https://cybercoretech.github.io/cybercore/docs.html">MASTER DOCS <span>↗</span></a>
-      <span class="theme-select-label">CYBERCORE THEME</span>
-      <cybercore-theme-chooser align="left"></cybercore-theme-chooser>
+    </div>
+    <cybercore-theme-chooser compact></cybercore-theme-chooser>
     </div>
   </header>
 
