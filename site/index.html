@@ -8,13 +8,14 @@
   <title>CyberSSH — Blacksite Console</title>
   <link rel="icon" type="image/svg+xml" href="assets/cyberssh-blacksite-console.svg">
   <link rel="stylesheet" href="styles.css?v=shared-footer-1">
-<link rel="stylesheet" href="https://cybercoretech.github.io/cybercore/theme-studio/static/theme-picker.css"/>
-<style>
-.theme-picker { display:flex; align-items:center; }
-.theme-button { background:var(--panel); color:var(--fg); border:none; padding:0.4rem 0.8rem; cursor:pointer; font-family:inherit; }
-.theme-swatch { width:1rem; height:1rem; background:var(--acid); display:inline-block; margin-right:0.4rem; vertical-align:middle; }
-.theme-chevron { margin-left:0.4rem; }
-</style>
+  <link rel="stylesheet" href="https://cybercoretech.github.io/kit/chooser.css">
+  <style>
+    .menu-panel .theme-select-label{display:block;margin:19px 0 8px;color:#778391;font:.75rem var(--mono);letter-spacing:1.2px}
+    #site-menu cybercore-theme-chooser{--ccx-font:var(--mono);--ccx-fg:var(--text);--ccx-bg:var(--panel);--ccx-accent:#39434e;--ccx-button-bg:#080b10;--ccx-button-fg:var(--cyan);--ccx-focus:var(--cyan);--ccx-button-width:100%;--ccx-button-max:100%;--ccx-glow:0;width:100%}
+    #site-menu cybercore-theme-chooser .ccx-picker{flex:1}
+  </style>
+  <script>window.SITE = Object.assign(window.SITE || {}, {"siteLabel": "Blacksite Console", "themeVars": {"white": "--text", "hot_pink": "--magenta", "acid_green": "--lime", "purple": "--violet"}});</script>
+  <script type="module" src="https://cybercoretech.github.io/kit/chooser.js"></script>
 </head>
 <body>
   <div class="scanline" aria-hidden="true"></div>
@@ -28,26 +29,11 @@
       <p class="eyebrow">NAVIGATE / CYBERSSH</p>
       <a href="#install">INSTALL / ANDROID <span>00</span></a><a href="#capabilities">CAPABILITIES <span>01</span></a><a href="#trust">SECURITY MODEL <span>02</span></a><a href="#roadmap">ROADMAP <span>03</span></a>
       <a href="https://github.com/cybercoretech/CyberSSH" target="_blank" rel="noreferrer">SOURCE REPOSITORY <span>↗</span></a>
-      <label for="theme-select">CYBERCORE THEME</label>
-      <select id="theme-select" aria-label="Choose a Cybercore theme">
-        <option value="blacksite">06 / Blacksite Console</option>
-        <option value="hunter">Cyberdyne Hunter</option>
-        <option value="glitch">Cyberpunk Glitch</option>
-      </select>
+      <a data-cybercore-master-docs href="https://cybercoretech.github.io/cybercore/docs.html">MASTER DOCS <span>↗</span></a>
+      <span class="theme-select-label">CYBERCORE THEME</span>
+      <cybercore-theme-chooser align="left"></cybercore-theme-chooser>
     </div>
-  <div class="theme-picker" id="picker">
-  <button class="theme-button" id="themeButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="themeMenu" title="Theme (T)">
-    <i class="theme-swatch" aria-hidden="true"></i><span id="themeLabel">LOADING…</span><span class="theme-chevron" aria-hidden="true">⌄</span>
-  </button>
-  <div class="theme-menu" id="themeMenu" hidden></div>
-</div>
-<div class="theme-picker" id="picker">
-  <button class="theme-button" id="themeButton" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="themeMenu" title="Theme (T)">
-    <i class="theme-swatch" aria-hidden="true"></i><span id="themeLabel">LOADING…</span><span class="theme-chevron" aria-hidden="true">⌄</span>
-  </button>
-  <div class="theme-menu" id="themeMenu" hidden></div>
-</div>
-</header>
+  </header>
 
   <main id="top">
     <section class="hero wrap">
@@ -117,31 +103,5 @@
   </footer>
   <script type="module" src="https://cybercoretech.github.io/kit/contact.js"></script>
   <script src="app.js"></script>
-<a data-cybercore-master-docs href="https://cybercoretech.github.io/cybercore/docs.html" style="position:fixed;top:16px;right:16px;z-index:99999;color:#22e6ff;background:#0d1422ee;border:1px solid #263454;border-radius:999px;padding:8px 12px;text-decoration:none;font:600 .7rem ui-monospace,monospace;letter-spacing:.08em;box-shadow:0 0 18px #22e6ff22">MASTER DOCS ↗</a>
-<script>
-  const root = getComputedStyle(document.documentElement);
-  document.documentElement.style.setProperty('--panel', root.getPropertyValue('--bg'));
-  document.documentElement.style.setProperty('--fg',    root.getPropertyValue('--fg'));
-  document.documentElement.style.setProperty('--acid',  root.getPropertyValue('--accent'));
-</script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-  // Map colour vars
-  const root = getComputedStyle(document.documentElement);
-  document.documentElement.style.setProperty('--panel', root.getPropertyValue('--bg'));
-  document.documentElement.style.setProperty('--fg',    root.getPropertyValue('--fg'));
-  document.documentElement.style.setProperty('--acid',  root.getPropertyValue('--accent'));
-
-  // Synchronise picker label with existing theme selector
-  const themeSelect = document.getElementById('theme-select');
-  const label = document.getElementById('themeLabel');
-  if (themeSelect && label) {
-    label.textContent = themeSelect.selectedOptions[0].textContent.trim();
-    themeSelect.addEventListener('change', function () {
-      label.textContent = themeSelect.selectedOptions[0].textContent.trim();
-    });
-  }
-});
-</script>
 </body>
 </html>
