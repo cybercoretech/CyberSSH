@@ -111,12 +111,31 @@
   </footer>
   <script type="module" src="https://cybercoretech.github.io/kit/contact.js"></script>
   <script src="app.js"></script>
-<a data-cybercore-master-docs href="https://cybercoretech.github.io/cybercore/docs.html" style="position:fixed;top:16px;right:16px;z-index:99999;color:#22e6ff;background:#0d1422ee;border:1px solid #263454;border-radius:999px;padding:8px 12px;text-decoration:none;font:600 .7rem ui-monospace,monospace;letter-spacing:.08em;box-shadow:0 0 18px #22e6ff22">MASTER DOCS ↗</a><script src="https://cybercoretech.github.io/cybercore/web/cybercore.js"></script>
+<a data-cybercore-master-docs href="https://cybercoretech.github.io/cybercore/docs.html" style="position:fixed;top:16px;right:16px;z-index:99999;color:#22e6ff;background:#0d1422ee;border:1px solid #263454;border-radius:999px;padding:8px 12px;text-decoration:none;font:600 .7rem ui-monospace,monospace;letter-spacing:.08em;box-shadow:0 0 18px #22e6ff22">MASTER DOCS ↗</a>
 <script>
   const root = getComputedStyle(document.documentElement);
   document.documentElement.style.setProperty('--panel', root.getPropertyValue('--bg'));
   document.documentElement.style.setProperty('--fg',    root.getPropertyValue('--fg'));
   document.documentElement.style.setProperty('--acid',  root.getPropertyValue('--accent'));
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // Map colour vars
+  const root = getComputedStyle(document.documentElement);
+  document.documentElement.style.setProperty('--panel', root.getPropertyValue('--bg'));
+  document.documentElement.style.setProperty('--fg',    root.getPropertyValue('--fg'));
+  document.documentElement.style.setProperty('--acid',  root.getPropertyValue('--accent'));
+
+  // Synchronise picker label with existing theme selector
+  const themeSelect = document.getElementById('theme-select');
+  const label = document.getElementById('themeLabel');
+  if (themeSelect && label) {
+    label.textContent = themeSelect.selectedOptions[0].textContent.trim();
+    themeSelect.addEventListener('change', function () {
+      label.textContent = themeSelect.selectedOptions[0].textContent.trim();
+    });
+  }
+});
 </script>
 </body>
 </html>
